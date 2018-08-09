@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "ServiceFabric_Custom_RemotingV2_Serializer_HeaderInject", "ServiceFabric-Custom-RemotingV2-Serializer-HeaderInject\ServiceFabric_Custom_RemotingV2_Serializer_HeaderInject.sfproj", "{C003CF47-990B-472F-A9DB-A99F7DE1A741}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actor1", "Actor1\Actor1.csproj", "{089CEE72-FE33-40A8-AF53-E01DAED3625C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Actor1.Interfaces", "Actor1.Interfaces\Actor1.Interfaces.csproj", "{BEC19E52-8AE9-4876-92B7-F4921295B81B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C003CF47-990B-472F-A9DB-A99F7DE1A741}.Debug|x64.ActiveCfg = Debug|x64
+		{C003CF47-990B-472F-A9DB-A99F7DE1A741}.Debug|x64.Build.0 = Debug|x64
+		{C003CF47-990B-472F-A9DB-A99F7DE1A741}.Debug|x64.Deploy.0 = Debug|x64
+		{C003CF47-990B-472F-A9DB-A99F7DE1A741}.Release|x64.ActiveCfg = Release|x64
+		{C003CF47-990B-472F-A9DB-A99F7DE1A741}.Release|x64.Build.0 = Release|x64
+		{C003CF47-990B-472F-A9DB-A99F7DE1A741}.Release|x64.Deploy.0 = Release|x64
+		{089CEE72-FE33-40A8-AF53-E01DAED3625C}.Debug|x64.ActiveCfg = Debug|x64
+		{089CEE72-FE33-40A8-AF53-E01DAED3625C}.Debug|x64.Build.0 = Debug|x64
+		{089CEE72-FE33-40A8-AF53-E01DAED3625C}.Release|x64.ActiveCfg = Release|x64
+		{089CEE72-FE33-40A8-AF53-E01DAED3625C}.Release|x64.Build.0 = Release|x64
+		{BEC19E52-8AE9-4876-92B7-F4921295B81B}.Debug|x64.ActiveCfg = Debug|x64
+		{BEC19E52-8AE9-4876-92B7-F4921295B81B}.Debug|x64.Build.0 = Debug|x64
+		{BEC19E52-8AE9-4876-92B7-F4921295B81B}.Release|x64.ActiveCfg = Release|x64
+		{BEC19E52-8AE9-4876-92B7-F4921295B81B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {809DB2D6-86AF-4EF8-8C53-9ED1E10F6180}
+	EndGlobalSection
+EndGlobal
