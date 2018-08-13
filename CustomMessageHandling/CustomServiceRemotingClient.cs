@@ -12,29 +12,61 @@
 
     public class CustomServiceRemotingClient : IServiceRemotingClient
     {
-        public ResolvedServicePartition ResolvedServicePartition { get => this.Wrapped.ResolvedServicePartition; set => this.Wrapped.ResolvedServicePartition = value; }
-        public string ListenerName { get => this.Wrapped.ListenerName; set => this.Wrapped.ListenerName = value; }
-        public ResolvedServiceEndpoint Endpoint { get => this.Wrapped.Endpoint; set => this.Wrapped.Endpoint = value; }
-
-        public IServiceRemotingClient Wrapped { get; }
-
         public CustomServiceRemotingClient(IServiceRemotingClient wrapped)
         {
             this.Wrapped = wrapped ?? throw new ArgumentNullException(nameof(wrapped));
         }
 
-        public Task<IServiceRemotingResponseMessage> RequestResponseAsync(IServiceRemotingRequestMessage requestRequestMessage)
+        public ResolvedServiceEndpoint Endpoint
         {
-            var correlationId = Encoding.Unicode.GetBytes(CallContext.CallContext.Current.CorrelationId());
-            requestRequestMessage.GetHeader().AddHeader("CorrelationId", correlationId);
-            return this.Wrapped.RequestResponseAsync(requestRequestMessage);
+            get => this.Wrapped.Endpoint;
+            set => this.Wrapped.Endpoint = value;
+        }
+
+        public string ListenerName
+        {
+            get => this.Wrapped.ListenerName;
+            set => this.Wrapped.ListenerName = value;
+        }
+
+        public ResolvedServicePartition ResolvedServicePartition
+        {
+            get => this.Wrapped.ResolvedServicePartition;
+            set => this.Wrapped.ResolvedServicePartition = value;
+        }
+
+        public IServiceRemotingClient Wrapped { get; }
+
+        public Task<IServiceRemotingResponseMessage> RequestResponseAsync(IServiceRemotingRequestMessage requestMessage)
+        {
+            AddCorrelationHeaders(requestMessage.GetHeader());
+            return this.Wrapped.RequestResponseAsync(requestMessage);
         }
 
         public void SendOneWay(IServiceRemotingRequestMessage requestMessage)
         {
-            var correlationId = Encoding.Unicode.GetBytes(CallContext.CallContext.Current.CorrelationId());
-            requestMessage.GetHeader().AddHeader("CorrelationId", correlationId);
+            AddCorrelationHeaders(requestMessage.GetHeader());
             this.Wrapped.SendOneWay(requestMessage);
+        }
+
+        private static void AddCorrelationHeaders(IServiceRemotingRequestMessageHeader header)
+        {
+            var callContext = CallContext.CallContext.Current;
+
+            foreach (var headerName in Constants.ExecutionTree.All)
+            {
+                AddStringHeader(callContext, headerName, header);
+            }
+        }
+
+        private static void AddStringHeader(CallContext.CallContext callContext, string headerName, IServiceRemotingRequestMessageHeader header)
+        {
+            var headerValue = callContext.Get<string>(headerName);
+            if (headerValue != null)
+            {
+                var headerValueBytes = Encoding.UTF8.GetBytes(headerValue);
+                header.AddHeader(headerName, headerValueBytes);
+            }
         }
     }
 }

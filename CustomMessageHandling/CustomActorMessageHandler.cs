@@ -1,6 +1,5 @@
 ﻿namespace CustomMessageHandling
 {
-    using System;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -20,28 +19,33 @@
 
         public override void HandleOneWayMessage(IServiceRemotingRequestMessage requestMessage)
         {
-            var header = requestMessage.GetHeader();
-
-            var headerName = "CorrelationId";
-
-            if (header.TryGetHeaderValue(headerName, out byte[] headerValue))
-            {
-                var correlationIdString = Encoding.Unicode.GetString(headerValue);
-                CallContext.CallContext.Current.CorrelationId(correlationIdString);
-            }
+            ExtractCorrelationHeaders(requestMessage.GetHeader());
             base.HandleOneWayMessage(requestMessage);
         }
 
-        public override Task<IServiceRemotingResponseMessage> HandleRequestResponseAsync(IServiceRemotingRequestContext requestContext, IServiceRemotingRequestMessage requestMessage)
+        public override Task<IServiceRemotingResponseMessage> HandleRequestResponseAsync(
+            IServiceRemotingRequestContext requestContext,
+            IServiceRemotingRequestMessage requestMessage)
         {
-            var header = requestMessage.GetHeader();
-
-            if (header.TryGetHeaderValue("CorrelationId", out byte[] correlationId))
-            {
-                var correlationIdString = Encoding.Unicode.GetString(correlationId);
-                CallContext.CallContext.Current.CorrelationId(correlationIdString);
-            }
+            ExtractCorrelationHeaders(requestMessage.GetHeader());
             return base.HandleRequestResponseAsync(requestContext, requestMessage);
+        }
+
+        private static void DecodeHeaderAndSetCallContext(string headerName, byte[] headerValue)
+        {
+            var headerString = Encoding.UTF8.GetString(headerValue);
+            CallContext.CallContext.Current.SetItem(headerName, headerString);
+        }
+
+        private static void ExtractCorrelationHeaders(IServiceRemotingRequestMessageHeader header)
+        {
+            foreach (var headerName in Constants.ExecutionTree.All)
+            {
+                if (header.TryGetHeaderValue(headerName, out var headerValue))
+                {
+                    DecodeHeaderAndSetCallContext(headerName, headerValue);
+                }
+            }
         }
     }
 }

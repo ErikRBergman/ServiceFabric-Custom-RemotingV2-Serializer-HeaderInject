@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using System.Fabric;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Actors.Runtime;
-
-namespace Actor1
+﻿namespace Actor1
 {
+    using System;
+    using System.Diagnostics.Tracing;
+    using System.Threading.Tasks;
+
+    using Microsoft.ServiceFabric.Actors.Runtime;
+
     [EventSource(Name = "MyCompany-ServiceFabric_Custom_RemotingV2_Serializer_HeaderInject-Actor1")]
     internal sealed class ActorEventSource : EventSource
     {
@@ -22,9 +19,12 @@ namespace Actor1
         }
 
         // Instance constructor is private to enforce singleton semantics
-        private ActorEventSource() : base() { }
+        private ActorEventSource()
+        {
+        }
 
         #region Keywords
+
         // Event keywords can be used to categorize events. 
         // Each keyword is a bit flag. A single event can be associated with multiple keywords (via EventAttribute.Keywords property).
         // Keywords must be defined as a public class named 'Keywords' inside EventSource that uses them.
@@ -32,9 +32,11 @@ namespace Actor1
         {
             public const EventKeywords HostInitialization = (EventKeywords)0x1L;
         }
+
         #endregion
 
         #region Events
+
         // Define an instance method for each event you want to record and apply an [Event] attribute to it.
         // The method name is the name of the event.
         // Pass any parameters you want to record with the event (only primitive integer types, DateTime, Guid & string are allowed).
@@ -42,24 +44,24 @@ namespace Actor1
         // The number and types of arguments passed to every event method must exactly match what is passed to WriteEvent().
         // Put [NonEvent] attribute on all methods that do not define an event.
         // For more information see https://msdn.microsoft.com/en-us/library/system.diagnostics.tracing.eventsource.aspx
-
         [NonEvent]
         public void Message(string message, params object[] args)
         {
             if (this.IsEnabled())
             {
-                string finalMessage = string.Format(message, args);
-                Message(finalMessage);
+                var finalMessage = string.Format(message, args);
+                this.Message(finalMessage);
             }
         }
 
         private const int MessageEventId = 1;
+
         [Event(MessageEventId, Level = EventLevel.Informational, Message = "{0}")]
         public void Message(string message)
         {
             if (this.IsEnabled())
             {
-                WriteEvent(MessageEventId, message);
+                this.WriteEvent(MessageEventId, message);
             }
         }
 
@@ -72,8 +74,8 @@ namespace Actor1
                 && actor.ActorService.Context != null
                 && actor.ActorService.Context.CodePackageActivationContext != null)
             {
-                string finalMessage = string.Format(message, args);
-                ActorMessage(
+                var finalMessage = string.Format(message, args);
+                this.ActorMessage(
                     actor.GetType().ToString(),
                     actor.Id.ToString(),
                     actor.ActorService.Context.CodePackageActivationContext.ApplicationTypeName,
@@ -91,39 +93,41 @@ namespace Actor1
         // This results in more efficient parameter handling, but requires explicit allocation of EventData structure and unsafe code.
         // To enable this code path, define UNSAFE conditional compilation symbol and turn on unsafe code support in project properties.
         private const int ActorMessageEventId = 2;
+
         [Event(ActorMessageEventId, Level = EventLevel.Informational, Message = "{9}")]
         private
 #if UNSAFE
             unsafe
 #endif
             void ActorMessage(
-            string actorType,
-            string actorId,
-            string applicationTypeName,
-            string applicationName,
-            string serviceTypeName,
-            string serviceName,
-            Guid partitionId,
-            long replicaOrInstanceId,
-            string nodeName,
-            string message)
+                string actorType,
+                string actorId,
+                string applicationTypeName,
+                string applicationName,
+                string serviceTypeName,
+                string serviceName,
+                Guid partitionId,
+                long replicaOrInstanceId,
+                string nodeName,
+                string message)
         {
 #if !UNSAFE
-            WriteEvent(
-                    ActorMessageEventId,
-                    actorType,
-                    actorId,
-                    applicationTypeName,
-                    applicationName,
-                    serviceTypeName,
-                    serviceName,
-                    partitionId,
-                    replicaOrInstanceId,
-                    nodeName,
-                    message);
+            this.WriteEvent(
+                ActorMessageEventId,
+                actorType,
+                actorId,
+                applicationTypeName,
+                applicationName,
+                serviceTypeName,
+                serviceName,
+                partitionId,
+                replicaOrInstanceId,
+                nodeName,
+                message);
 #else
                 const int numArgs = 10;
-                fixed (char* pActorType = actorType, pActorId = actorId, pApplicationTypeName = applicationTypeName, pApplicationName = applicationName, pServiceTypeName = serviceTypeName, pServiceName = serviceName, pNodeName = nodeName, pMessage = message)
+                fixed (char* pActorType = actorType, pActorId = actorId, pApplicationTypeName = applicationTypeName, pApplicationName = applicationName, pServiceTypeName =
+ serviceTypeName, pServiceName = serviceName, pNodeName = nodeName, pMessage = message)
                 {
                     EventData* eventData = stackalloc EventData[numArgs];
                     eventData[0] = new EventData { DataPointer = (IntPtr) pActorType, Size = SizeInBytes(actorType) };
@@ -143,14 +147,17 @@ namespace Actor1
         }
 
         private const int ActorHostInitializationFailedEventId = 3;
+
         [Event(ActorHostInitializationFailedEventId, Level = EventLevel.Error, Message = "Actor host initialization failed", Keywords = Keywords.HostInitialization)]
         public void ActorHostInitializationFailed(string exception)
         {
-            WriteEvent(ActorHostInitializationFailedEventId, exception);
+            this.WriteEvent(ActorHostInitializationFailedEventId, exception);
         }
+
         #endregion
 
         #region Private Methods
+
 #if UNSAFE
             private int SizeInBytes(string s)
             {
@@ -164,6 +171,7 @@ namespace Actor1
                 }
             }
 #endif
+
         #endregion
     }
 }

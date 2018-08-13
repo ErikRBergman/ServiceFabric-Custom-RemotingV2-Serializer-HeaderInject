@@ -2,21 +2,19 @@
 {
     public static class CallContextExtensions
     {
-
-        public static T GetItem<T>(this CallContext callContext, string key)
-        {
-            return (T)callContext.GetItem(key);
-        }
-
-
         public static void FreeNamedDataSlot(this CallContext callContext, string key)
         {
             callContext.RemoveItem(key);
         }
 
-        public static void LogicalSetData(this CallContext callContext, string key, object value)
+        public static T Get<T>(this CallContext callContext, string key)
         {
-            callContext.SetItem(key, value);
+            return (T)callContext.GetItem(key);
+        }
+
+        public static T GetItem<T>(this CallContext callContext, string key)
+        {
+            return (T)callContext.GetItem(key);
         }
 
         public static object LogicalGetData(this CallContext callContext, string key)
@@ -24,9 +22,9 @@
             return callContext.GetItem(key);
         }
 
-        public static T Get<T>(this CallContext callContext, string key)
+        public static void LogicalSetData(this CallContext callContext, string key, object value)
         {
-            return (T)callContext.GetItem(key);
+            callContext.SetItem(key, value);
         }
     }
 }

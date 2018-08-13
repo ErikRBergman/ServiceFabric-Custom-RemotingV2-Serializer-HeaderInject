@@ -7,6 +7,6 @@
 
     public interface IActorService1 : IActorService
     {
-        Task<string> GetCorrelationIdAsync(CancellationToken cancellationToken);
+        Task<string[]> GetCorrelationIdAsync(CancellationToken cancellationToken);
     }
 }
