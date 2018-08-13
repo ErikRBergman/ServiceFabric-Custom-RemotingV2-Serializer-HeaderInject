@@ -10,6 +10,8 @@ using Actor1.Interfaces;
 
 namespace Actor1
 {
+    using CustomMessageHandling.CallContext;
+
     /// <remarks>
     /// This class represents an actor.
     /// Every ActorID maps to an instance of this class.
@@ -31,41 +33,9 @@ namespace Actor1
         {
         }
 
-        /// <summary>
-        /// This method is called whenever an actor is activated.
-        /// An actor is activated the first time any of its methods are invoked.
-        /// </summary>
-        protected override Task OnActivateAsync()
+        public async Task<string> GetCorrelationIdAsync(CancellationToken cancellationToken)
         {
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
-
-            // The StateManager is this actor's private state store.
-            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
-            // Any serializable object can be saved in the StateManager.
-            // For more information, see https://aka.ms/servicefabricactorsstateserialization
-
-            return this.StateManager.TryAddStateAsync("count", 0);
-        }
-
-        /// <summary>
-        /// TODO: Replace with your own actor method.
-        /// </summary>
-        /// <returns></returns>
-        Task<int> IActor1.GetCountAsync(CancellationToken cancellationToken)
-        {
-            return this.StateManager.GetStateAsync<int>("count", cancellationToken);
-        }
-
-        /// <summary>
-        /// TODO: Replace with your own actor method.
-        /// </summary>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        Task IActor1.SetCountAsync(int count, CancellationToken cancellationToken)
-        {
-            // Requests are not guaranteed to be processed in order nor at most once.
-            // The update function here verifies that the incoming count is greater than the current count to preserve order.
-            return this.StateManager.AddOrUpdateStateAsync("count", count, (key, value) => count > value ? count : value, cancellationToken);
+            return CallContext.Current.CorrelationId();
         }
     }
 }

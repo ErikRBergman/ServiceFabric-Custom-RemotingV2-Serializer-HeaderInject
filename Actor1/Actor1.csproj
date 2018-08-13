@@ -97,6 +97,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActorService1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Actor1.cs" />
     <Compile Include="Program.cs" />
@@ -112,6 +113,10 @@
     <ProjectReference Include="..\Actor1.Interfaces\Actor1.Interfaces.csproj">
       <Project>{BEC19E52-8AE9-4876-92B7-F4921295B81B}</Project>
       <Name>Actor1.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CustomMessageHandling\CustomMessageHandling.csproj">
+      <Project>{258EED4C-FC61-4103-A6E5-217ACEC427CA}</Project>
+      <Name>CustomMessageHandling</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
