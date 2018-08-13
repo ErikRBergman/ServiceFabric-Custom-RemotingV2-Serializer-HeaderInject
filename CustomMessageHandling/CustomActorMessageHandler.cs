@@ -19,7 +19,7 @@
 
         public override void HandleOneWayMessage(IServiceRemotingRequestMessage requestMessage)
         {
-            ExtractCorrelationHeaders(requestMessage.GetHeader());
+            ExtractAndSetAllCorrelationHeaderValues(requestMessage.GetHeader());
             base.HandleOneWayMessage(requestMessage);
         }
 
@@ -27,17 +27,17 @@
             IServiceRemotingRequestContext requestContext,
             IServiceRemotingRequestMessage requestMessage)
         {
-            ExtractCorrelationHeaders(requestMessage.GetHeader());
+            ExtractAndSetAllCorrelationHeaderValues(requestMessage.GetHeader());
             return base.HandleRequestResponseAsync(requestContext, requestMessage);
         }
 
         private static void DecodeHeaderAndSetCallContext(string headerName, byte[] headerValue)
         {
-            var headerString = Encoding.UTF8.GetString(headerValue);
+            var headerString = CommonEncoding.DefaultEncoding.GetString(headerValue);
             CallContext.CallContext.Current.SetItem(headerName, headerString);
         }
 
-        private static void ExtractCorrelationHeaders(IServiceRemotingRequestMessageHeader header)
+        private static void ExtractAndSetAllCorrelationHeaderValues(IServiceRemotingRequestMessageHeader header)
         {
             foreach (var headerName in Constants.ExecutionTree.All)
             {

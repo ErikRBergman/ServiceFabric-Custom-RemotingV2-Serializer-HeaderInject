@@ -12,6 +12,6 @@ namespace Actor1.Interfaces
 
     public interface IActor1 : IActor
     {
-        Task<string[]> GetCorrelationIdAsync(CancellationToken cancellationToken);
+        Task<string[]> GetTransferredCallContextDataAsync(CancellationToken cancellationToken);
     }
 }

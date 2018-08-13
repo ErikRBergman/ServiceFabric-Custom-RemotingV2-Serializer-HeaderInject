@@ -64,7 +64,7 @@
             var headerValue = callContext.Get<string>(headerName);
             if (headerValue != null)
             {
-                var headerValueBytes = Encoding.UTF8.GetBytes(headerValue);
+                var headerValueBytes = CommonEncoding.DefaultEncoding.GetBytes(headerValue);
                 header.AddHeader(headerName, headerValueBytes);
             }
         }

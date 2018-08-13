@@ -1,5 +1,8 @@
 ﻿namespace CustomMessageHandling.CallContext
 {
+    /// <summary>
+    /// Provides extensions to support the old .NET Framework syntax of call context
+    /// </summary>
     public static class CallContextExtensions
     {
         public static void FreeNamedDataSlot(this CallContext callContext, string key)

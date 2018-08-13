@@ -30,7 +30,7 @@
         {
         }
 
-        public async Task<string[]> GetCorrelationIdAsync(CancellationToken cancellationToken)
+        public async Task<string[]> GetTransferredCallContextDataAsync(CancellationToken cancellationToken)
         {
             return new[] { CallContext.Current.CorrelationId(), CallContext.Current.UserId() };
         }

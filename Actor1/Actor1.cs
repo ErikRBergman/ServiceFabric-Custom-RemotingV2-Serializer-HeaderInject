@@ -18,9 +18,15 @@
         {
         }
 
-        public async Task<string[]> GetCorrelationIdAsync(CancellationToken cancellationToken)
+        public async Task<string[]> GetTransferredCallContextDataAsync(CancellationToken cancellationToken)
         {
             return new[] { CallContext.Current.CorrelationId(), CallContext.Current.UserId() };
+        }
+
+        public async Task TestTransferredCallContextDataAsync()
+        {
+            var cid = CallContext.Current.CorrelationId();
+            var uid = CallContext.Current.UserId();
         }
     }
 }
